@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:for_global/umumiy_balance/balance_page.dart';
-import 'beeline/main_page.dart';
+
 
 void main(){
   runApp(MyApp());

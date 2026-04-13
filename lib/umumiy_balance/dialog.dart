@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future<String?> openDialog(BuildContext context) {
+Future<String?> openDialog(BuildContext context, {required int currentBalance}) {
   TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   bool isIncome = true;
@@ -55,7 +55,7 @@ Future<String?> openDialog(BuildContext context) {
                         },
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -66,13 +66,33 @@ Future<String?> openDialog(BuildContext context) {
               ),
               ElevatedButton(
                 onPressed: () {
-                  if (amountController.text.isNotEmpty) {
-                    // format: miqdor|turi|izoh
-                    Navigator.pop(
-                      context,
-                      "${amountController.text}|${isIncome ? "Daromad" : "Xarajat"}|${noteController.text}",
+                  final int summa =
+                      int.tryParse(amountController.text.trim()) ?? 0;
+
+                  if (summa < 1000) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Minimal summa 1000 so'm bo'lishi kerak"),
+                      ),
                     );
+                    return;
                   }
+
+                  if (!isIncome && summa > currentBalance) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Xarajat umumiy summadan katta bo'lmasligi kerak",
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  Navigator.pop(
+                    context,
+                    "$summa|${isIncome ? "Daromad" : "Xarajat"}|${noteController.text.trim()}",
+                  );
                 },
                 child: const Text("OK"),
               ),
